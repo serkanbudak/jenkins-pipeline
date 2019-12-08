@@ -43,7 +43,6 @@ node {
     }
 
     stage('Run App'){
-        withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         runApp(CONTAINER_NAME, CONTAINER_TAG, USERNAME, HTTP_PORT)
     }
 
