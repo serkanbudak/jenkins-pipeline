@@ -19,7 +19,7 @@ node {
     stage('Build'){
         sh "mvn clean install"
     }
-
+    /*
     stage('Sonar'){
         try {
             sh "mvn sonar:sonar"
@@ -27,6 +27,26 @@ node {
             echo "The sonar server could not be reached ${error}"
         }
      }
+    */
+    stage('build && SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube Server') {
+                    // Optionally use a Maven environment you've configured already
+              
+                        sh 'mvn clean package sonar:sonar'
+                    
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
     stage("Image Prune"){
         imagePrune(CONTAINER_NAME)
