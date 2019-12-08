@@ -1,6 +1,6 @@
 def CONTAINER_NAME="jenkins-pipeline"
 def CONTAINER_TAG="latest"
-def DOCKER_HUB_USER="hakdogan"
+def #DOCKER_HUB_USER="hakdogan"
 def HTTP_PORT="8090"
 
 node {
@@ -43,7 +43,8 @@ node {
     }
 
     stage('Run App'){
-        runApp(CONTAINER_NAME, CONTAINER_TAG, DOCKER_HUB_USER, HTTP_PORT)
+        withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        runApp(CONTAINER_NAME, CONTAINER_TAG, USERNAME, HTTP_PORT)
     }
 
 }
